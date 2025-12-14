@@ -9,11 +9,11 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://bramwork.com/terms/",
+        "termsOfService": "https://bramworks.com/terms/",
         "contact": {
             "name": "API Support",
-            "url": "http://bramwork.com/support",
-            "email": "support@bramwork.com"
+            "url": "https://bramworks.com/support",
+            "email": "support@bramworks.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -23,7 +23,65 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {},
+    "paths": {
+        "/recipes": {
+            "get": {
+                "description": "recipes list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "Return a recipes list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Recipe"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Recipe": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "instructions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "publishedAt": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
     "externalDocs": {
         "description": "OpenAPI",
         "url": "https://bramworks.com/resources/open-api/"

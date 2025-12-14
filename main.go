@@ -7,8 +7,9 @@ import (
 
 	"os"
 
-	"example.org/models"
 	"github.com/gin-gonic/gin"
+	docs "github.com/mrojasb2000/GinRecipes/docs"
+	"github.com/mrojasb2000/GinRecipes/models"
 	"github.com/rs/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -34,6 +35,14 @@ func NewRecipeHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, recipe)
 }
 
+// Recipes list
+// @Summary      Return a recipes list
+// @Description  recipes list
+// @Tags         recipes
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  models.Recipe
+// @Router       /recipes [get]
 func ListRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipes)
 }
@@ -103,6 +112,7 @@ func SearchRecipesHandler(c *gin.Context) {
 // @externalDocs.url          https://bramworks.com/resources/open-api/
 func main() {
 	router := gin.Default()
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	router.POST("api/v1/recipes", NewRecipeHandler)
 	router.GET("api/v1/recipes", ListRecipesHandler)
 	router.PUT("api/v1/recipes/:id", UpdateRecipeHandler)

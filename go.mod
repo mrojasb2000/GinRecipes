@@ -1,4 +1,4 @@
-module example.org
+module github.com/mrojasb2000/GinRecipes
 
 go 1.25.4
 
