@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"example.org/models"
 	"github.com/gin-gonic/gin"
+	"github.com/mrojasb2000/GinRecipes/models"
 	"github.com/stretchr/testify/assert"
 )
 
