@@ -1,0 +1,15 @@
+basePath: /api/v1
+consumes:
+- application/json
+host: localhost:8080
+info:
+  contact: {}
+  description: Recipes API This is a sample recipes API.
+  title: Recipes API
+  version: 1.0.0
+paths: {}
+produces:
+- application/json
+schemes:
+- ""
+swagger: "2.0"

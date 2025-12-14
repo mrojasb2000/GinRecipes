@@ -1,0 +1,19 @@
+basePath: /api/v1
+externalDocs:
+  description: OpenAPI
+  url: https://bramworks.com/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@bramwork.com
+    name: API Support
+    url: http://bramwork.com/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://bramwork.com/terms/
+  title: Recipes Example API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

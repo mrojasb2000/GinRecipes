@@ -10,6 +10,8 @@ import (
 	"example.org/models"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var recipes []models.Recipe
@@ -82,6 +84,23 @@ func SearchRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
+// @title           Recipes Example API
+// @version         1.0
+// @description     This is a sample server celler server.
+// @termsOfService  https://bramworks.com/terms/
+
+// @contact.name   API Support
+// @contact.url    https://bramworks.com/support
+// @contact.email  support@bramworks.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://bramworks.com/resources/open-api/
 func main() {
 	router := gin.Default()
 	router.POST("api/v1/recipes", NewRecipeHandler)
@@ -89,5 +108,9 @@ func main() {
 	router.PUT("api/v1/recipes/:id", UpdateRecipeHandler)
 	router.DELETE("api/v1/recipes/:id", DeleteRecipeHandler)
 	router.GET("api/v1/recipes/search", SearchRecipesHandler)
+
+	// use ginSwagger middleware to serve the API docs
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	router.Run()
 }
