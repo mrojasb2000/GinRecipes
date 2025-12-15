@@ -17,6 +17,12 @@ Recipes Example API, This is a sample server celler server.
 
 ## Swagger
 
+Create/update swagger model documentation
 ```sh
-swagger serve -F swagger ./docs/swagger.json
+$ swag init
+```
+
+Running swagger server
+```sh
+$ swagger serve -F swagger ./docs/swagger.json
 ```

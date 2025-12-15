@@ -1,22 +1,44 @@
 basePath: /api/v1
 definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
   models.Recipe:
     properties:
       id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        format: uuid
         type: string
       ingredients:
+        example:
+        - ingredient1
+        - ingredient2
         items:
           type: string
         type: array
       instructions:
+        example:
+        - instruction1
+        - instruction2
         items:
           type: string
         type: array
       name:
+        example: Recipe name
         type: string
       publishedAt:
+        example: "2024-01-01T00:00:00Z"
         type: string
       tags:
+        example:
+        - value1
+        - value2
         items:
           type: string
         type: array
@@ -35,14 +57,14 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: https://bramworks.com/terms/
-  title: Recipes Example API
+  title: Recipes Example API.
   version: "1.0"
 paths:
   /recipes:
     get:
       consumes:
       - application/json
-      description: recipes list
+      description: Return a recipes list
       produces:
       - application/json
       responses:
@@ -50,7 +72,52 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Recipe'
-      summary: Return a recipes list
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Operation GET /recipes returns a list of recipes.
+      tags:
+      - recipes
+  /recipes/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing recipe.
+      parameters:
+      - description: Recipe ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Recipe'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Operation PUT /recipes/{id} recipes.
       tags:
       - recipes
 swagger: "2.0"

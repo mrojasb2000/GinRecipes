@@ -36,17 +36,33 @@ func NewRecipeHandler(c *gin.Context) {
 }
 
 // Recipes list
-// @Summary      Return a recipes list
-// @Description  recipes list
+// @Summary      Operation GET /recipes returns a list of recipes.
+// @Description  Return a recipes list
 // @Tags         recipes
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  models.Recipe
+// @Failure		400	{object}	httputil.HTTPError
+// @Failure		404	{object}	httputil.HTTPError
+// @Failure		500	{object}	httputil.HTTPError
 // @Router       /recipes [get]
 func ListRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipes)
 }
 
+// ShowAccount godoc
+//
+//	@Summary		Operation PUT /recipes/{id} recipes.
+//	@Description	Update an existing recipe.
+//	@Tags			recipes
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Recipe ID"
+//	@Success		200	{object}	models.Recipe
+//	@Failure		400	{object}	httputil.HTTPError
+//	@Failure		404	{object}	httputil.HTTPError
+//	@Failure		500	{object}	httputil.HTTPError
+//	@Router			/recipes/{id} [put]
 func UpdateRecipeHandler(c *gin.Context) {
 	id := c.Param("id")
 	var recipe models.Recipe
@@ -93,7 +109,7 @@ func SearchRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
-// @title           Recipes Example API
+// @title           Recipes Example API.
 // @version         1.0
 // @description     This is a sample server celler server.
 // @termsOfService  https://bramworks.com/terms/

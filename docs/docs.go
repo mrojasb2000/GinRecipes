@@ -26,7 +26,7 @@ const docTemplate = `{
     "paths": {
         "/recipes": {
             "get": {
-                "description": "recipes list",
+                "description": "Return a recipes list",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,12 +36,80 @@ const docTemplate = `{
                 "tags": [
                     "recipes"
                 ],
-                "summary": "Return a recipes list",
+                "summary": "Operation GET /recipes returns a list of recipes.",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Recipe"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipes/{id}": {
+            "put": {
+                "description": "Update an existing recipe.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "Operation PUT /recipes/{id} recipes.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Recipe ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Recipe"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
                         }
                     }
                 }
@@ -49,35 +117,64 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "httputil.HTTPError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "message": {
+                    "type": "string",
+                    "example": "status bad request"
+                }
+            }
+        },
         "models.Recipe": {
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "ingredients": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ingredient1",
+                        "ingredient2"
+                    ]
                 },
                 "instructions": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "instruction1",
+                        "instruction2"
+                    ]
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Recipe name"
                 },
                 "publishedAt": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
                 },
                 "tags": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "value1",
+                        "value2"
+                    ]
                 }
             }
         }
@@ -94,7 +191,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "Recipes Example API",
+	Title:            "Recipes Example API.",
 	Description:      "This is a sample server celler server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
