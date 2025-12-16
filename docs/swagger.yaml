@@ -98,6 +98,12 @@ paths:
         name: id
         required: true
         type: string
+      - description: Update recipe
+        in: body
+        name: models.Recipe
+        required: true
+        schema:
+          $ref: '#/definitions/models.Recipe'
       produces:
       - application/json
       responses:

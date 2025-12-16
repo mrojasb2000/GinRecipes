@@ -85,6 +85,15 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Update recipe",
+                        "name": "models.Recipe",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Recipe"
+                        }
                     }
                 ],
                 "responses": {

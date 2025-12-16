@@ -58,6 +58,7 @@ func ListRecipesHandler(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"Recipe ID"
+//	@Param			models.Recipe	body		models.Recipe	true	"Update recipe"
 //	@Success		200	{object}	models.Recipe
 //	@Failure		400	{object}	httputil.HTTPError
 //	@Failure		404	{object}	httputil.HTTPError
