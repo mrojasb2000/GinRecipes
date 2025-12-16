@@ -50,7 +50,7 @@ func ListRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipes)
 }
 
-// ShowAccount godoc
+// Update Recipe
 //
 //	@Summary		Operation PUT /recipes/{id} recipes.
 //	@Description	Update an existing recipe.
