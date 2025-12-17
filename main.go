@@ -28,6 +28,10 @@ var client *mongo.Client
 func init() {
 	ctx = context.Background()
 	client, err = mongo.Connect(options.Client().ApplyURI("mongodb://root:password@localhost:27017/"))
+	if err != nil {
+		panic(err)
+	}
+
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
 			panic(err)
