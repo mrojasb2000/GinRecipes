@@ -87,7 +87,72 @@ paths:
       summary: Operation GET /recipes returns a list of recipes.
       tags:
       - recipes
+    post:
+      consumes:
+      - application/json
+      description: Add a new recipe.
+      parameters:
+      - description: Add recipe
+        in: body
+        name: models.Recipe
+        required: true
+        schema:
+          $ref: '#/definitions/models.Recipe'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Recipe'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Operation POST /recipes recipes.
+      tags:
+      - recipes
   /recipes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing recipe.
+      parameters:
+      - description: Recipe ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Recipe'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Operation DELETE /recipes/{id} recipes.
+      tags:
+      - recipes
     put:
       consumes:
       - application/json
@@ -124,6 +189,39 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Operation PUT /recipes/{id} recipes.
+      tags:
+      - recipes
+  /recipes/search:
+    get:
+      consumes:
+      - application/json
+      description: Search an existing recipe.
+      parameters:
+      - description: Tag Recipe
+        in: query
+        name: tag
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Recipe'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Operation Search Recipe GET /recipes/search?={tag} recipes.
       tags:
       - recipes
 swagger: "2.0"

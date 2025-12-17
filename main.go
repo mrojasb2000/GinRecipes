@@ -23,6 +23,25 @@ func init() {
 	_ = json.Unmarshal(file, &recipes)
 }
 
+// Add new Recipe
+//
+//	@Summary		Operation POST /recipes recipes.
+//	@Description	Add a new recipe.
+//	@Tags			recipes
+//	@Accept			json
+//	@Produce		json
+//	@Param			models.Recipe	body		models.Recipe	true	"Add recipe"
+//	@Success		200	{object}	models.Recipe
+//	@Failure		400	{object}	httputil.HTTPError
+//	@Failure		404	{object}	httputil.HTTPError
+//	@Failure		500	{object}	httputil.HTTPError
+//	@Router			/recipes [post]
+//
+// NewRecipeHandler handles POST requests to create a new recipe.
+// It binds the JSON request body to a Recipe model, validates the input,
+// generates a unique ID using xid, sets the published timestamp to the current time,
+// appends the recipe to the recipes slice, and returns the created recipe with HTTP 201 status.
+// If the JSON binding fails, it returns an HTTP 400 error with the validation error message.
 func NewRecipeHandler(c *gin.Context) {
 	var recipe models.Recipe
 	if err := c.ShouldBindJSON(&recipe); err != nil {
@@ -83,6 +102,19 @@ func UpdateRecipeHandler(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
+// Delete Recipe
+//
+//	@Summary		Operation DELETE /recipes/{id} recipes.
+//	@Description	Delete an existing recipe.
+//	@Tags			recipes
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Recipe ID"
+//	@Success		200	{object}	models.Recipe
+//	@Failure		400	{object}	httputil.HTTPError
+//	@Failure		404	{object}	httputil.HTTPError
+//	@Failure		500	{object}	httputil.HTTPError
+//	@Router			/recipes/{id} [delete]
 func DeleteRecipeHandler(c *gin.Context) {
 	id := c.Param("id")
 	for i, r := range recipes {
@@ -95,6 +127,19 @@ func DeleteRecipeHandler(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
+// Search Recipes
+//
+//	@Summary		Operation Search Recipe GET /recipes/search?={tag} recipes.
+//	@Description	Search an existing recipe.
+//	@Tags			recipes
+//	@Accept			json
+//	@Produce		json
+//	@Param			tag	query		string	true	"Tag Recipe"
+//	@Success		200	{object}	models.Recipe
+//	@Failure		400	{object}	httputil.HTTPError
+//	@Failure		404	{object}	httputil.HTTPError
+//	@Failure		500	{object}	httputil.HTTPError
+//	@Router			/recipes/search [get]
 func SearchRecipesHandler(c *gin.Context) {
 	tag := c.Query("tag")
 	listOfRecipes := make([]models.Recipe, 0)
