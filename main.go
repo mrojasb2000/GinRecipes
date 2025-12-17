@@ -27,7 +27,7 @@ var client *mongo.Client
 
 func init() {
 	ctx = context.Background()
-	client, err = mongo.Connect(options.Client().ApplyURI("mongodb://root:password@localhost:27017/"))
+	client, err = mongo.Connect(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		panic(err)
 	}
