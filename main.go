@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -13,11 +15,28 @@ import (
 	"github.com/rs/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
 var recipes []models.Recipe
+var ctx context.Context
+var err error
+var client *mongo.Client
 
 func init() {
+	ctx = context.Background()
+	client, err = mongo.Connect(options.Client().ApplyURI("mongodb://root:password@localhost:27017/"))
+	defer func() {
+		if err := client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+	if err = client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		panic(err)
+	}
+	log.Println("Connected to MongoDB!")
 	recipes = make([]models.Recipe, 0)
 	file, _ := os.ReadFile("recipes.json")
 	_ = json.Unmarshal(file, &recipes)
