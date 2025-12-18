@@ -30,4 +30,5 @@ $ swagger serve -F swagger ./docs/swagger.json
 ## Running
 ```sh
 $ MONGO_URI="mongodb://<USERNAME>:<PASSWORD>@localhost:27017/test?authSource=admin" go run .
+$ MONGO_URI="mongodb://root:password@localhost:27017/test?authSource=admin" MONGO_DATABASE=demo go run .
 ```
