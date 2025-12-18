@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -41,9 +40,6 @@ func init() {
 		panic(err)
 	}
 	log.Println("Connected to MongoDB!")
-	recipes = make([]models.Recipe, 0)
-	file, _ := os.ReadFile("recipes.json")
-	_ = json.Unmarshal(file, &recipes)
 }
 
 // Add new Recipe
