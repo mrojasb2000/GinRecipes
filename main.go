@@ -14,6 +14,7 @@ import (
 	"github.com/rs/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
@@ -23,6 +24,7 @@ var recipes []models.Recipe
 var ctx context.Context
 var err error
 var client *mongo.Client
+var collection *mongo.Collection
 
 func init() {
 	ctx = context.Background()
@@ -31,14 +33,15 @@ func init() {
 		panic(err)
 	}
 
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+	// defer func() {
+	// 	if err := client.Disconnect(ctx); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
 	if err = client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
+	collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("recipes")
 	log.Println("Connected to MongoDB!")
 }
 
@@ -85,6 +88,21 @@ func NewRecipeHandler(c *gin.Context) {
 // @Failure		500	{object}	httputil.HTTPError
 // @Router       /recipes [get]
 func ListRecipesHandler(c *gin.Context) {
+	cur, err := collection.Find(c, bson.D{{}})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer cur.Close(c)
+	recipes = make([]models.Recipe, 0)
+	for cur.Next(c) {
+		var recipe models.Recipe
+		if err := cur.Decode(&recipe); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		recipes = append(recipes, recipe)
+	}
 	c.JSON(http.StatusOK, recipes)
 }
 
