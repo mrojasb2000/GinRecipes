@@ -3,6 +3,8 @@ package models
 import (
 	"slices"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type (
@@ -15,11 +17,13 @@ func (t Tags) Contains(key string) bool {
 	return slices.Contains(t, key)
 }
 
+// swagger:parameters recipes newRecipe
 type Recipe struct {
-	ID           string       `json:"id" example:"550e8400-e29b-41d4-a716-446655440000" format:"uuid"`
-	Name         string       `json:"name" example:"Recipe name"`
-	Tags         Tags         `json:"tags" example:"value1,value2"`
-	Ingredients  Ingredients  `json:"ingredients" example:"ingredient1,ingredient2"`
-	Instructions Instructions `json:"instructions" example:"instruction1,instruction2"`
-	PublishedAt  time.Time    `json:"publishedAt" example:"2024-01-01T00:00:00Z"`
+	//swagger:ignore
+	ID           primitive.ObjectID `json:"id" bson:"_id"`
+	Name         string             `json:"name" bson:"name" example:"Chocolate Cake"`
+	Tags         Tags               `json:"tags" bson:"tags" example:"dessert,sweet"`
+	Ingredients  Ingredients        `json:"ingredients" bson:"ingredients" example:"ingredient1,ingredient2"`
+	Instructions Instructions       `json:"instructions" bson:"instructions" example:"instruction1,instruction2"`
+	PublishedAt  time.Time          `json:"publishedAt" bson:"publishedAt" example:"2024-01-01T00:00:00Z"`
 }

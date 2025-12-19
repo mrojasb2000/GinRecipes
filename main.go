@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	docs "github.com/mrojasb2000/GinRecipes/docs"
 	"github.com/mrojasb2000/GinRecipes/models"
-	"github.com/rs/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -70,9 +70,14 @@ func NewRecipeHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	recipe.ID = xid.New().String()
+	recipe.ID = primitive.NewObjectID()
 	recipe.PublishedAt = time.Now()
-	recipes = append(recipes, recipe)
+	_, err := collection.InsertOne(c, recipe)
+	if err != nil {
+		log.Println("Error inserting recipe: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while inserting a new recipe"})
+		return
+	}
 	c.JSON(http.StatusCreated, recipe)
 }
 
@@ -121,21 +126,21 @@ func ListRecipesHandler(c *gin.Context) {
 //	@Failure		500	{object}	httputil.HTTPError
 //	@Router			/recipes/{id} [put]
 func UpdateRecipeHandler(c *gin.Context) {
-	id := c.Param("id")
-	var recipe models.Recipe
-	if err := c.ShouldBindJSON(&recipe); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	for i, r := range recipes {
-		if r.ID == id {
-			recipe.ID = r.ID
-			recipe.PublishedAt = time.Now()
-			recipes[i] = recipe
-			c.JSON(http.StatusOK, recipe)
-			return
-		}
-	}
+	// id := c.Param("id")
+	// var recipe models.Recipe
+	// if err := c.ShouldBindJSON(&recipe); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// for i, r := range recipes {
+	// 	if r.ID == primitive.ObjectIDFromHex(id) {
+	// 		recipe.ID = r.ID
+	// 		recipe.PublishedAt = time.Now()
+	// 		recipes[i] = recipe
+	// 		c.JSON(http.StatusOK, recipe)
+	// 		return
+	// 	}
+	// }
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
@@ -153,14 +158,14 @@ func UpdateRecipeHandler(c *gin.Context) {
 //	@Failure		500	{object}	httputil.HTTPError
 //	@Router			/recipes/{id} [delete]
 func DeleteRecipeHandler(c *gin.Context) {
-	id := c.Param("id")
-	for i, r := range recipes {
-		if r.ID == id {
-			recipes = append(recipes[:i], recipes[i+1:]...)
-			c.JSON(http.StatusOK, gin.H{"message": "Recipe deleted"})
-			return
-		}
-	}
+	// id := c.Param("id")
+	// for i, r := range recipes {
+	// 	if r.ID == id {
+	// 		recipes = append(recipes[:i], recipes[i+1:]...)
+	// 		c.JSON(http.StatusOK, gin.H{"message": "Recipe deleted"})
+	// 		return
+	// 	}
+	// }
 	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
 }
 
