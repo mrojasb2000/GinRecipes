@@ -95,7 +95,7 @@ func NewRecipeHandler(c *gin.Context) {
 func ListRecipesHandler(c *gin.Context) {
 	cur, err := collection.Find(c, bson.D{})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	defer cur.Close(c)
