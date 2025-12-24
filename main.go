@@ -144,7 +144,7 @@ func UpdateRecipeHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": "Recipe has been updated"})
+	c.JSON(http.StatusOK, gin.H{"message": "Recipe has been updated"})
 }
 
 // Delete Recipe
