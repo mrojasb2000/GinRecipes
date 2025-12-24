@@ -70,7 +70,7 @@ func NewRecipeHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	recipe.ID = primitive.NewObjectID()
+	recipe.Id = primitive.NewObjectID().Hex()
 	recipe.PublishedAt = time.Now()
 	_, err := collection.InsertOne(c, recipe)
 	if err != nil {
@@ -93,7 +93,7 @@ func NewRecipeHandler(c *gin.Context) {
 // @Failure		500	{object}	httputil.HTTPError
 // @Router       /recipes [get]
 func ListRecipesHandler(c *gin.Context) {
-	cur, err := collection.Find(c, bson.D{{}})
+	cur, err := collection.Find(c, bson.D{})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -101,12 +101,10 @@ func ListRecipesHandler(c *gin.Context) {
 	defer cur.Close(c)
 	recipes = make([]models.Recipe, 0)
 	for cur.Next(c) {
-		var recipe models.Recipe
-		if err := cur.Decode(&recipe); err != nil {
+		if err := cur.All(c, &recipes); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		recipes = append(recipes, recipe)
 	}
 	c.JSON(http.StatusOK, recipes)
 }
@@ -126,22 +124,27 @@ func ListRecipesHandler(c *gin.Context) {
 //	@Failure		500	{object}	httputil.HTTPError
 //	@Router			/recipes/{id} [put]
 func UpdateRecipeHandler(c *gin.Context) {
-	// id := c.Param("id")
-	// var recipe models.Recipe
-	// if err := c.ShouldBindJSON(&recipe); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// for i, r := range recipes {
-	// 	if r.ID == primitive.ObjectIDFromHex(id) {
-	// 		recipe.ID = r.ID
-	// 		recipe.PublishedAt = time.Now()
-	// 		recipes[i] = recipe
-	// 		c.JSON(http.StatusOK, recipe)
-	// 		return
-	// 	}
-	// }
-	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
+	id := c.Param("id")
+	var recipe models.Recipe
+	if err := c.ShouldBindJSON(&recipe); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	_, err := collection.UpdateOne(c, bson.M{
+		"id": id,
+	}, bson.D{{
+		Key: "$set", Value: bson.D{
+			{Key: "name", Value: recipe.Name},
+			{Key: "instructions", Value: recipe.Instructions},
+			{Key: "ingredients", Value: recipe.Ingredients},
+			{Key: "tags", Value: recipe.Tags},
+		}}})
+	if err != nil {
+		log.Println("Error updating recipe: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": "Recipe has been updated"})
 }
 
 // Delete Recipe
