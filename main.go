@@ -140,7 +140,7 @@ func UpdateRecipeHandler(c *gin.Context) {
 			{Key: "tags", Value: recipe.Tags},
 		}}})
 	if err != nil {
-		log.Println("Error updating recipe: ", err)
+		log.Println("Error updating a recipe: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -161,15 +161,37 @@ func UpdateRecipeHandler(c *gin.Context) {
 //	@Failure		500	{object}	httputil.HTTPError
 //	@Router			/recipes/{id} [delete]
 func DeleteRecipeHandler(c *gin.Context) {
-	// id := c.Param("id")
-	// for i, r := range recipes {
-	// 	if r.ID == id {
-	// 		recipes = append(recipes[:i], recipes[i+1:]...)
-	// 		c.JSON(http.StatusOK, gin.H{"message": "Recipe deleted"})
-	// 		return
-	// 	}
-	// }
-	c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
+	id := c.Param("id")
+
+	if !checkRecipeExistInDb(id) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Recipe not found"})
+		return
+	}
+
+	filter := bson.M{
+		"id": id,
+	}
+	_, err := collection.DeleteOne(c, filter)
+	if err != nil {
+		log.Println("Error deleting a recipe: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error delete a recipe"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Recipe has been deleted"})
+}
+
+// checkRecipeExistInDb checks if a recipe with the given ID exists in the database.
+func checkRecipeExistInDb(id string) bool {
+	filter := bson.M{
+		"id": id,
+	}
+	var recipe models.Recipe
+	err := collection.FindOne(ctx, filter).Decode(&recipe)
+	if err != nil {
+		log.Println("Error deleting a recipe: ", err)
+		return false
+	}
+	return true
 }
 
 // Search Recipes
