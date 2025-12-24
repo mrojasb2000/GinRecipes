@@ -141,7 +141,7 @@ func UpdateRecipeHandler(c *gin.Context) {
 		}}})
 	if err != nil {
 		log.Println("Error updating recipe: ", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Recipe has been updated"})
